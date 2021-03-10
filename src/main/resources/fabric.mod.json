@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "minecraft-command-permissions",
+  "version": "${version}",
+
+  "name": "Minecraft Command Permissions",
+  "description": "Registers vanilla Minecraft commands in Fabric Permission API with structure \"minecraft.command.<command>\"",
+  "authors": [
+    "TjeuKayim"
+  ],
+  "contact": {
+    "sources": "https://github.com/TjeuKayim/minecraft-command-permissions-fabric"
+  },
+
+  "license": "MIT",
+  "icon": "assets/modid/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.github.tjeukayim.commandpermissionsfabric.PermissionsMod"
+    ]
+  },
+  "mixins": [
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x",
+    "fabric-permissions-api-v0": "*"
+  },
+  "suggests": {
+    "luckperms": "*"
+  }
+}
