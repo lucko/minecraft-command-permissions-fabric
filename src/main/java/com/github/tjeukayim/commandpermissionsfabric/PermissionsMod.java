@@ -25,6 +25,7 @@ public class PermissionsMod implements ModInitializer {
             for (String name : VANILLA_COMMANDS) {
                 alterCommand(dispatcher, name);
             }
+            LOGGER.info("Loaded Minecraft Command Permissions");
         });
     }
 
@@ -34,11 +35,9 @@ public class PermissionsMod implements ModInitializer {
             Field field = CommandNode.class.getDeclaredField("requirement");
             field.setAccessible(true);
             Predicate<ServerCommandSource> original = child.getRequirement();
-            field.set(child, (Predicate<ServerCommandSource>) (source) -> {
-                LOGGER.info("Check permissions for {}", name);
-                return Permissions.check(source, PREFIX + name, original.test(source));
-            });
-            LOGGER.info("Altered command " + name);
+            field.set(child, (Predicate<ServerCommandSource>) (source) ->
+                    Permissions.check(source, PREFIX + name, original.test(source))
+            );
         } catch (NoSuchFieldException | IllegalAccessException e) {
             LOGGER.warn("Failed to alter field CommandNode.requirement" + name, e);
         }
