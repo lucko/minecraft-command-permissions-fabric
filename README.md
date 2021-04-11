@@ -1,4 +1,4 @@
-# Vanilla Permissions Fabric
+# Minecraft Command Permissions Fabric
 
 Registers vanilla Minecraft commands in Fabric Permission API with structure `minecraft.command.<command>`,
 like `minecraft.command.ban`.
