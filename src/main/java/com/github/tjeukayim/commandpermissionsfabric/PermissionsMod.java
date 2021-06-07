@@ -5,7 +5,11 @@ import com.mojang.brigadier.tree.CommandNode;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.event.user.UserDataRecalculateEvent;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,6 +39,16 @@ public class PermissionsMod implements ModInitializer {
                 alterCommand(dispatcher, name);
             }
             LOGGER.info("Loaded Minecraft Command Permissions");
+        });
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            LuckPermsProvider.get().getEventBus().subscribe(UserDataRecalculateEvent.class, e -> {
+                ServerPlayerEntity player = server.getPlayerManager().getPlayer(e.getUser().getUniqueId());
+                if (player != null) {
+                    server.getPlayerManager().sendCommandTree(player);
+                    LOGGER.debug(() -> "Updated command tree for " + player.getName());
+                }
+            });
+            LOGGER.info("Set-up autocompletion refresh for LuckPerms");
         });
     }
 
