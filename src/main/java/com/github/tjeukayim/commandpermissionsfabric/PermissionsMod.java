@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class PermissionsMod implements ModInitializer {
     /**
@@ -22,6 +23,14 @@ public class PermissionsMod implements ModInitializer {
     @Override
     public void onInitialize() {
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+            if ("true".equals(System.getenv("minecraft-command-permissions.test"))) {
+                var allCommands = dispatcher.getRoot().getChildren()
+                        .stream()
+                        .map(c -> "\"" + c.getName() + "\",")
+                        .sorted()
+                        .collect(Collectors.joining("\n"));
+                LOGGER.info("All commands:\n{}", allCommands);
+            }
             for (String name : VANILLA_COMMANDS) {
                 alterCommand(dispatcher, name);
             }
@@ -30,6 +39,7 @@ public class PermissionsMod implements ModInitializer {
     }
 
     private void alterCommand(CommandDispatcher<ServerCommandSource> dispatcher, String name) {
+        LOGGER.debug("Alter command {}", name);
         CommandNode<ServerCommandSource> child = dispatcher.getRoot().getChild(name);
         try {
             Field field = CommandNode.class.getDeclaredField("requirement");
@@ -74,6 +84,7 @@ public class PermissionsMod implements ModInitializer {
             "gamerule",
             "give",
             "help",
+            "item",
             "kick",
             "kill",
             "list",
@@ -89,7 +100,6 @@ public class PermissionsMod implements ModInitializer {
             "playsound",
             "recipe",
             "reload",
-            "replaceitem",
             "save-all",
             "save-off",
             "save-on",

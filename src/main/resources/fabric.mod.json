@@ -13,7 +13,7 @@
   },
 
   "license": "MIT",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/minecraft-command-permissions/icon.png",
 
   "environment": "*",
   "entrypoints": {
@@ -25,10 +25,11 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.7.4",
+    "fabricloader": ">=0.11.3",
     "fabric": "*",
-    "minecraft": "1.16.x",
-    "fabric-permissions-api-v0": "*"
+    "minecraft": "1.17.x",
+    "fabric-permissions-api-v0": "*",
+    "java": ">=16"
   },
   "suggests": {
     "luckperms": "*"
