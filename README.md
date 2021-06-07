@@ -14,7 +14,7 @@ Inspired by other modding frameworks:
 
 ## Permissions
 
-All these commands are supported: 
+These are all the permissions for Minecraft 1.16 (other versions have some changes):
 
 ```
 minecraft.command.advancement, minecraft.command.attribute, minecraft.command.ban, minecraft.command.ban-ip,
