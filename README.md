@@ -3,8 +3,11 @@
 Registers vanilla Minecraft commands in Fabric Permission API with structure `minecraft.command.<command>`,
 like `minecraft.command.ban`.
 
-This mod depends on [LuckPerms](https://luckperms.net).
-After installing this mod, you can use it like this:
+Depends on [fabric-permissions-api-v0.1.jar](https://github.com/lucko/fabric-permissions-api/releases)
+(this is already bundled in the LuckPerms JAR).
+
+This mod is designed to be used with [LuckPerms](https://luckperms.net).
+Then you can do things like:
 `lp group admin permission set minecraft.command.ban true`.
 
 Inspired by other modding frameworks:
