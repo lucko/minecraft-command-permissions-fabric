@@ -1,5 +1,6 @@
 package com.github.tjeukayim.commandpermissionsfabric;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.api.ModInitializer;
@@ -17,7 +18,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -43,8 +43,8 @@ public class PermissionsMod implements ModInitializer {
                         .collect(Collectors.joining("\n"));
                 LOGGER.info("All commands:\n{}", allCommands);
             }
-            for (CommandNode<ServerCommandSource> node : dispatcher.getRoot().getChildren()) {
-                alterCommand(node);
+            for (String name : VANILLA_COMMANDS) {
+                alterCommand(dispatcher, name);
             }
             LOGGER.info("Loaded Minecraft Command Permissions");
         });
@@ -69,18 +69,14 @@ public class PermissionsMod implements ModInitializer {
         });
     }
 
-    private void alterCommand(CommandNode<ServerCommandSource> node) {
-        var name = node.getName();
-        Predicate<ServerCommandSource> original = node.getRequirement();
-        if (!Objects.requireNonNull(commandPackageName(node)).startsWith("net.minecraft.")) {
-            LOGGER.debug("Skip command {}", name);
-            return;
-        }
+    private void alterCommand(CommandDispatcher<ServerCommandSource> dispatcher, String name) {
         LOGGER.debug("Alter command {}", name);
+        CommandNode<ServerCommandSource> child = dispatcher.getRoot().getChild(name);
         try {
             var field = CommandNode.class.getDeclaredField("requirement");
             field.setAccessible(true);
-            field.set(node, (Predicate<ServerCommandSource>) (source) ->
+            Predicate<ServerCommandSource> original = child.getRequirement();
+            field.set(child, (Predicate<ServerCommandSource>) (source) ->
                     Permissions.check(source, PREFIX + name, original == null || original.test(source))
             );
         } catch (NoSuchFieldException | IllegalAccessException e) {
@@ -88,23 +84,86 @@ public class PermissionsMod implements ModInitializer {
         }
     }
 
-    private String commandPackageName(CommandNode<ServerCommandSource> node) {
-        var command = node.getCommand();
-        if (command != null) {
-            return command.getClass().getPackageName();
-        }
-        var redirect = node.getRedirect();
-        if (redirect != null) {
-            return commandPackageName(redirect);
-        }
-        for (var child : node.getChildren()) {
-            var childResult = commandPackageName(child);
-            if (childResult != null) {
-                return childResult;
-            }
-        }
-        return null;
-    }
+    /**
+     * List of commands built-in to vanilla Minecraft that will get permission checks, in alphabetical order.
+     * Aliases are treated the same as normal commands and have separate permissions, for example
+     * "minecraft.command.tp" is a separate permission from "minecraft.command.teleport".
+     */
+    private static final String[] VANILLA_COMMANDS = {
+            "advancement",
+            "attribute",
+            "ban",
+            "ban-ip",
+            "banlist",
+            "bossbar",
+            "clear",
+            "clone",
+            "data",
+            "datapack",
+            "debug",
+            "defaultgamemode",
+            "deop",
+            "difficulty",
+            "effect",
+            "enchant",
+            "execute",
+            "experience", // <- xp
+            "fill",
+            "forceload",
+            "function",
+            "gamemode",
+            "gamerule",
+            "give",
+            "help",
+            "item",
+            "kick",
+            "kill",
+            "list",
+            "locate",
+            "locatebiome",
+            "loot",
+            "me",
+            "msg", // <- tell, w
+            "op",
+            "pardon",
+            "pardon-ip",
+            "particle",
+            "playsound",
+            "recipe",
+            "reload",
+            "save-all",
+            "save-off",
+            "save-on",
+            "say",
+            "schedule",
+            "scoreboard",
+            "seed",
+            "setblock",
+            "setidletimeout",
+            "setworldspawn",
+            "spawnpoint",
+            "spectate",
+            "spreadplayers",
+            "stop",
+            "stopsound",
+            "summon",
+            "tag",
+            "team",
+            "teammsg", // <- tm
+            "teleport", // <- tp
+            "tell", // -> msg
+            "tellraw",
+            "time",
+            "title",
+            "tm", // -> teammsg
+            "tp", // -> teleport (Sponge uses tp, while Bukkit uses teleport)
+            "trigger",
+            "w", // w -> msg
+            "weather",
+            "whitelist",
+            "worldborder",
+            "xp", // -> experience
+    };
 
     private void onPermissionsChange(MinecraftServer server, User user) {
         // TODO: Sometimes this event fires multiple times at once
