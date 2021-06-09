@@ -3,7 +3,8 @@
 Registers vanilla Minecraft commands in Fabric Permission API with structure `minecraft.command.<command>`,
 like `minecraft.command.ban`.
 
-Depends on [fabric-permissions-api-v0.1.jar](https://github.com/lucko/fabric-permissions-api/releases).
+Depends on [fabric-permissions-api-v0.1.jar](https://github.com/lucko/fabric-permissions-api/releases)
+(this is already bundled in the LuckPerms JAR).
 
 This mod is designed to be used with [LuckPerms](https://luckperms.net).
 Then you can do things like:
@@ -16,7 +17,7 @@ Inspired by other modding frameworks:
 
 ## Permissions
 
-All these commands are supported: 
+These are all the permissions for Minecraft 1.16 (other versions have some changes):
 
 ```
 minecraft.command.advancement, minecraft.command.attribute, minecraft.command.ban, minecraft.command.ban-ip,

@@ -9,7 +9,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Field;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -42,11 +41,11 @@ public class PermissionsMod implements ModInitializer {
         LOGGER.debug("Alter command {}", name);
         CommandNode<ServerCommandSource> child = dispatcher.getRoot().getChild(name);
         try {
-            Field field = CommandNode.class.getDeclaredField("requirement");
+            var field = CommandNode.class.getDeclaredField("requirement");
             field.setAccessible(true);
             Predicate<ServerCommandSource> original = child.getRequirement();
             field.set(child, (Predicate<ServerCommandSource>) (source) ->
-                    Permissions.check(source, PREFIX + name, original.test(source))
+                    Permissions.check(source, PREFIX + name, original == null || original.test(source))
             );
         } catch (NoSuchFieldException | IllegalAccessException e) {
             LOGGER.warn("Failed to alter field CommandNode.requirement" + name, e);
