@@ -30,16 +30,21 @@ public class PermissionsMod implements ModInitializer {
                         .collect(Collectors.joining("\n"));
                 LOGGER.info("All commands:\n{}", allCommands);
             }
-            for (String name : VANILLA_COMMANDS) {
-                alterCommand(dispatcher, name);
+            for (CommandNode<ServerCommandSource> node : dispatcher.getRoot().getChildren()) {
+                alterCommand(node);
             }
             LOGGER.info("Loaded Minecraft Command Permissions");
         });
     }
 
-    private void alterCommand(CommandDispatcher<ServerCommandSource> dispatcher, String name) {
+    private void alterCommand(CommandNode<ServerCommandSource> child) {
+        var name = child.getName();
         LOGGER.debug("Alter command {}", name);
-        CommandNode<ServerCommandSource> child = dispatcher.getRoot().getChild(name);
+        var packageName = commandPackageName(child);
+        if (packageName == null || !packageName.startsWith("net.minecraft")) {
+            LOGGER.debug("minecraft-command-permissions skipping command {} from {}", name, packageName);
+            return;
+        }
         try {
             var field = CommandNode.class.getDeclaredField("requirement");
             field.setAccessible(true);
@@ -52,84 +57,21 @@ public class PermissionsMod implements ModInitializer {
         }
     }
 
-    /**
-     * List of commands built-in to vanilla Minecraft that will get permission checks, in alphabetical order.
-     * Aliases are treated the same as normal commands and have separate permissions, for example
-     * "minecraft.command.tp" is a separate permission from "minecraft.command.teleport".
-     */
-    private static final String[] VANILLA_COMMANDS = {
-            "advancement",
-            "attribute",
-            "ban",
-            "ban-ip",
-            "banlist",
-            "bossbar",
-            "clear",
-            "clone",
-            "data",
-            "datapack",
-            "debug",
-            "defaultgamemode",
-            "deop",
-            "difficulty",
-            "effect",
-            "enchant",
-            "execute",
-            "experience", // <- xp
-            "fill",
-            "forceload",
-            "function",
-            "gamemode",
-            "gamerule",
-            "give",
-            "help",
-            "item",
-            "kick",
-            "kill",
-            "list",
-            "locate",
-            "locatebiome",
-            "loot",
-            "me",
-            "msg", // <- tell, w
-            "op",
-            "pardon",
-            "pardon-ip",
-            "particle",
-            "playsound",
-            "recipe",
-            "reload",
-            "save-all",
-            "save-off",
-            "save-on",
-            "say",
-            "schedule",
-            "scoreboard",
-            "seed",
-            "setblock",
-            "setidletimeout",
-            "setworldspawn",
-            "spawnpoint",
-            "spectate",
-            "spreadplayers",
-            "stop",
-            "stopsound",
-            "summon",
-            "tag",
-            "team",
-            "teammsg", // <- tm
-            "teleport", // <- tp
-            "tell", // -> msg
-            "tellraw",
-            "time",
-            "title",
-            "tm", // -> teammsg
-            "tp", // -> teleport (Sponge uses tp, while Bukkit uses teleport)
-            "trigger",
-            "w", // w -> msg
-            "weather",
-            "whitelist",
-            "worldborder",
-            "xp", // -> experience
-    };
+    private String commandPackageName(CommandNode<ServerCommandSource> node) {
+        var command = node.getCommand();
+        if (command != null) {
+            return command.getClass().getPackageName();
+        }
+        var redirect = node.getRedirect();
+        if (redirect != null) {
+            return commandPackageName(redirect);
+        }
+        for (var child : node.getChildren()) {
+            var childResult = commandPackageName(child);
+            if (childResult != null) {
+                return childResult;
+            }
+        }
+        return null;
+    }
 }
