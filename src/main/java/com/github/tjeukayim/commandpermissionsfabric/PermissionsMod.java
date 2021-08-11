@@ -1,10 +1,9 @@
 package com.github.tjeukayim.commandpermissionsfabric;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.command.ServerCommandSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +20,10 @@ public class PermissionsMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+        // LuckPerms only calls AbstractLuckPermsPlugin::enable on the SERVER_STARTING event
+        // before that LuckPermsPlugin::getVerboseHandler() returns null
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+            var dispatcher = server.getCommandManager().getDispatcher();
             if ("true".equals(System.getenv("minecraft-command-permissions.test"))) {
                 var allCommands = dispatcher.getRoot().getChildren()
                         .stream()
