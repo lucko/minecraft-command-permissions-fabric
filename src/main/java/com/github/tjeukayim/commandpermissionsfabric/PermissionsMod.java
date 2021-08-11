@@ -21,7 +21,8 @@ public class PermissionsMod implements ModInitializer {
     @Override
     public void onInitialize() {
         // LuckPerms only calls AbstractLuckPermsPlugin::enable on the SERVER_STARTING event
-        // before that LuckPermsPlugin::getVerboseHandler() returns null
+        // before that LuckPermsPlugin::getVerboseHandler() returns null. Initializing
+        // earlier caused issued when loading datapacks with functions.
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             var dispatcher = server.getCommandManager().getDispatcher();
             if ("true".equals(System.getenv("minecraft-command-permissions.test"))) {
