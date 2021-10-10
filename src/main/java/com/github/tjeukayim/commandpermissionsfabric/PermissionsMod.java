@@ -16,6 +16,9 @@ public class PermissionsMod implements ModInitializer {
      * Permission string prefix compatible with other modding frameworks.
      */
     public static final String PREFIX = "minecraft.command.";
+    private static final String MINECRAFT_LOGIN_PREFIX = "minecraft.login";
+    public static final String BYPASS_PLAYER_LIMIT = MINECRAFT_LOGIN_PREFIX + ".bypass-player-limit";
+
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Override

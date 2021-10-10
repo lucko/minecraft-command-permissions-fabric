@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.github.tjeukayim.commandpermissionsfabric.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "DedicatedPlayerManagerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

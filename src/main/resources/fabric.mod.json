@@ -22,6 +22,7 @@
     ]
   },
   "mixins": [
+    "minecraft-command-permissions.mixins.json"
   ],
 
   "depends": {
