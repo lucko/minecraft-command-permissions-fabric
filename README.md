@@ -54,6 +54,11 @@ And since Minecraft 1.17 also this one:
 minecraft.command.item
 ```
 
+With Minecraft 1.18 you'll get this one too:
+```
+minecraft.command.jfr
+```
+
 ## Limitations
 
 1. Aliases have separate permissions, for example `minecraft.command.tp` and `minecraft.command.teleport` can have different settings
@@ -63,7 +68,7 @@ minecraft.command.item
    - `minecraft.autocraft`
    - `minecraft.debugstick`
    - `minecraft.debugstick.always`
-4. These permissions are Sponge specific,  <ins>**not implemented**</ins>:
+3. These permissions are Sponge specific,  <ins>**not implemented**</ins>:
    - `minecraft.selector`
    - `minecraft.spawn-protection.override`
    - `minecraft.force-gamemode.override`
