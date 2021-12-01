@@ -56,7 +56,7 @@ public class PermissionsMod implements ModInitializer {
                     Permissions.check(source, PREFIX + name, original == null || original.test(source))
             );
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            LOGGER.warn("Failed to alter field CommandNode.requirement" + name, e);
+            LOGGER.warn("Failed to alter field CommandNode.requirement " + name, e);
         }
     }
 
