@@ -1,5 +1,7 @@
 # Minecraft Command Permissions Fabric
 
+Announcement: I'm looking for a new maintainer that wants to continue developing this mod, as I will archive this Git repository soon.
+
 Registers vanilla Minecraft commands in Fabric Permission API with structure `minecraft.command.<command>`,
 like `minecraft.command.ban`.
 
