@@ -1,22 +1,27 @@
 # Minecraft Command Permissions Fabric
 
-Announcement: I'm looking for a new maintainer that wants to continue developing this mod, as I will archive this Git repository soon.
+A mod to add permission checks for built-in Minecraft commands.
 
-Registers vanilla Minecraft commands in Fabric Permission API with structure `minecraft.command.<command>`,
-like `minecraft.command.ban`.
+* Download from the [releases](https://github.com/lucko/minecraft-command-permissions-fabric/releases) tab.
+* You also need to have a permissions mod installed. (e.g. [LuckPerms](https://luckperms.net))
 
-Depends on [fabric-permissions-api-v0.1.jar](https://github.com/lucko/fabric-permissions-api/releases)
-(this is already bundled in the LuckPerms JAR).
+## Details
 
-This mod is designed to be used with [LuckPerms](https://luckperms.net).
-Then you can do things like:
-`lp group admin permission set minecraft.command.ban true`.
-However, it should also work with other permission mods that respond to fabric-permissions-api events.
+Permissions for built-in Minecraft commands are added in the format `minecraft.command.<command>`.   
+(e.g. `minecraft.command.ban` for the /ban command)
 
-Inspired by other modding frameworks:
+The permission checks are performed using [fabric-permissions-api](https://github.com/lucko/fabric-permissions-api), which acts as an interface between permission *checking* mods (like this one) and permission *provider* mods.
+
+If you're using LuckPerms, you can grant these permissions using the permission set command.   
+e.g. `/lp group admin permission set minecraft.command.ban true`
+
+Any permission provider mod that supports fabric-permissions-api is also supported.
+
+Originally created by Tjeu Kayim ([@TjeuKayim](https://github.com/TjeuKayim)), and inspired by other modding frameworks:
 
 - https://bukkit.fandom.com/wiki/CraftBukkit_Commands
 - https://docs.spongepowered.org/stable/en/server/spongineer/commands.html
+
 
 ## Supported permissions
 
