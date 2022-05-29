@@ -38,6 +38,22 @@ public class PermissionsMod implements ModInitializer {
             }
             LOGGER.info("Loaded Minecraft Command Permissions");
         });
+
+        ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, success) -> {
+            var dispatcher = server.getCommandManager().getDispatcher();
+            if ("true".equals(System.getenv("minecraft-command-permissions.test"))) {
+                var allCommands = dispatcher.getRoot().getChildren()
+                        .stream()
+                        .map(c -> "\"" + c.getName() + "\",")
+                        .sorted()
+                        .collect(Collectors.joining("\n"));
+                LOGGER.info("All commands:\n{}", allCommands);
+            }
+            for (CommandNode<ServerCommandSource> node : dispatcher.getRoot().getChildren()) {
+                alterCommand(node);
+            }
+            LOGGER.info("Reloaded Minecraft Command Permissions");
+        });
     }
 
     private void alterCommand(CommandNode<ServerCommandSource> child) {
