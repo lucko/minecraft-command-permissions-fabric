@@ -55,15 +55,19 @@ minecraft.command.give            minecraft.command.setblock
 minecraft.command.help            minecraft.command.setidletimeout
 ```
 
-And since Minecraft 1.17 also this one:
-
+Minecraft 1.17 adds the following permissions:
 ```txt
 minecraft.command.item
 ```
 
-With Minecraft 1.18 you'll get this one too:
-```
+Minecraft 1.18 adds the following permissions:
+```txt
 minecraft.command.jfr
+```
+
+Minecraft 1.19 adds the following permissions:
+```txt
+minecraft.command.place
 ```
 
 ## Limitations
