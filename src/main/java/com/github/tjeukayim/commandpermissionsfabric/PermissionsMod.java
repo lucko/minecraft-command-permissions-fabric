@@ -3,7 +3,7 @@ package com.github.tjeukayim.commandpermissionsfabric;
 import com.mojang.brigadier.tree.CommandNode;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,11 +20,7 @@ public class PermissionsMod implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        // LuckPerms only calls AbstractLuckPermsPlugin::enable on the SERVER_STARTING event
-        // before that LuckPermsPlugin::getVerboseHandler() returns null. Initializing
-        // earlier caused issued when loading datapacks with functions.
-        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            var dispatcher = server.getCommandManager().getDispatcher();
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             if ("true".equals(System.getenv("minecraft-command-permissions.test"))) {
                 var allCommands = dispatcher.getRoot().getChildren()
                         .stream()
@@ -52,9 +48,7 @@ public class PermissionsMod implements ModInitializer {
             var field = CommandNode.class.getDeclaredField("requirement");
             field.setAccessible(true);
             Predicate<ServerCommandSource> original = child.getRequirement();
-            field.set(child, (Predicate<ServerCommandSource>) (source) ->
-                    Permissions.check(source, PREFIX + name, original == null || original.test(source))
-            );
+            field.set(child, original.or((source) -> Permissions.check(source, PREFIX + name, false)));
         } catch (NoSuchFieldException | IllegalAccessException e) {
             LOGGER.warn("Failed to alter field CommandNode.requirement " + name, e);
         }
