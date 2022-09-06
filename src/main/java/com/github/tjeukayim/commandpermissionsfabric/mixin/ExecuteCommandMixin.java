@@ -24,8 +24,21 @@ public abstract class ExecuteCommandMixin {
         return null;
     }
 
-    @Inject(method = "addConditionArguments", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;then(Lcom/mojang/brigadier/builder/ArgumentBuilder;)Lcom/mojang/brigadier/builder/ArgumentBuilder;", ordinal = 0))
-    private static void addPermissionConditionArgument(CommandNode<ServerCommandSource> root, LiteralArgumentBuilder<ServerCommandSource> argumentBuilder, boolean positive, CommandRegistryAccess commandRegistryAccess, CallbackInfoReturnable<ArgumentBuilder<ServerCommandSource, ?>> cir) {
+    @Inject(
+            method = "addConditionArguments",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;then(Lcom/mojang/brigadier/builder/ArgumentBuilder;)Lcom/mojang/brigadier/builder/ArgumentBuilder;",
+                    ordinal = 0
+            )
+    )
+    private static void addPermissionConditionArgument(
+            CommandNode<ServerCommandSource> root,
+            LiteralArgumentBuilder<ServerCommandSource> argumentBuilder,
+            boolean positive,
+            CommandRegistryAccess commandRegistryAccess,
+            CallbackInfoReturnable<ArgumentBuilder<ServerCommandSource, ?>> cir
+    ) {
         argumentBuilder.then(
                 CommandManager.literal("permission")
                         .then(

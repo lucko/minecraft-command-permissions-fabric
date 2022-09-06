@@ -7,6 +7,24 @@
     "defaultRequire": 1
   },
   "server": [
-    "ExecuteCommandMixin"
+    "ExecuteCommandMixin",
+    "PlayerManagerMixin",
+    "bypass.chat_speed.ServerPlayNetworkHandlerMixin",
+    "bypass.force_gamemode.DefaultGameModeCommandMixin",
+    "bypass.force_gamemode.ServerPlayerEntityMixin",
+    "bypass.move_speed.ServerPlayNetworkHandlerMixin",
+    "bypass.spawn_protection.MinecraftDedicatedServerMixin",
+    "debugstick.DebugStickItemMixin",
+    "nbt.BlockItemMixin",
+    "nbt.EntityTypeMixin",
+    "nbt.ServerPlayNetworkHandlerMixin",
+    "operator_blocks.CommandBlockExecutorMixin",
+    "operator_blocks.CommandBlockItemMixin",
+    "operator_blocks.OperatorBlockMixin",
+    "operator_blocks.ServerPlayerInteractionManagerMixin",
+    "operator_blocks.ServerPlayNetworkHandlerMixin",
+    "operator_blocks.StructureBlockBlockEntityMixin",
+    "selector.EntityArgumentTypeMixin",
+    "selector.EntitySelectorMixin"
   ]
 }
