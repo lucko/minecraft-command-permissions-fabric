@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.12-SNAPSHOT'
+	id 'fabric-loom' version '1.0-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -12,6 +12,10 @@ group = project.maven_group
 
 repositories {
 	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+
+loom {
+	accessWidenerPath.set(file("src/main/resources/mcpf.accesswidener"))
 }
 
 dependencies {
