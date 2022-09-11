@@ -51,7 +51,7 @@ public class PermissionsMod implements DedicatedServerModInitializer {
         }
         LOGGER.debug("Alter command node {}", name);
         Predicate<ServerCommandSource> predicate = source -> Permissions.check(source, Constants.COMMAND.formatted(name));
-        ((CommandNodeAccessor<ServerCommandSource>) child).setRequirement(root ? child.getRequirement().or(predicate) : predicate);
+        ((CommandNodeAccessor<ServerCommandSource>) child).setRequirement(root ? child.getRequirement().or(predicate) : predicate.or(src -> src.hasPermissionLevel(2)));
         for (CommandNode<ServerCommandSource> childChild : child.getChildren()) {
             alterCommandNode(dispatcher, childChild, false);
         }

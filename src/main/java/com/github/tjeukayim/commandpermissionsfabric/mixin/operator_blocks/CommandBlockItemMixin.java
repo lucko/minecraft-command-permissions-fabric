@@ -19,7 +19,6 @@ public abstract class CommandBlockItemMixin extends BlockItem {
         super(block, settings);
     }
 
-    // TODO: add command block minecart open permission check
     @Redirect(
             method = "getPlacementState",
             at = @At(
