@@ -1,8 +1,10 @@
 package com.github.tjeukayim.commandpermissionsfabric;
 
+import com.github.tjeukayim.commandpermissionsfabric.mixin.CommandNodeAccessor;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.tree.CommandNode;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.fabricmc.api.ModInitializer;
+import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.ServerCommandSource;
 import org.apache.logging.log4j.LogManager;
@@ -11,15 +13,16 @@ import org.apache.logging.log4j.Logger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class PermissionsMod implements ModInitializer {
+import static com.github.tjeukayim.commandpermissionsfabric.Constants.build;
+
+public class PermissionsMod implements DedicatedServerModInitializer {
     /**
      * Permission string prefix compatible with other modding frameworks.
      */
-    public static final String PREFIX = "minecraft.command.";
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Override
-    public void onInitialize() {
+    public void onInitializeServer() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             if ("true".equals(System.getenv("minecraft-command-permissions.test"))) {
                 var allCommands = dispatcher.getRoot().getChildren()
@@ -30,27 +33,27 @@ public class PermissionsMod implements ModInitializer {
                 LOGGER.info("All commands:\n{}", allCommands);
             }
             for (CommandNode<ServerCommandSource> node : dispatcher.getRoot().getChildren()) {
-                alterCommand(node);
+                alterCommandNode(dispatcher, node, true);
             }
             LOGGER.info("Loaded Minecraft Command Permissions");
         });
     }
 
-    private void alterCommand(CommandNode<ServerCommandSource> child) {
-        var name = child.getName();
-        LOGGER.debug("Alter command {}", name);
-        var packageName = commandPackageName(child);
-        if (packageName == null || !packageName.startsWith("net.minecraft")) {
-            LOGGER.debug("minecraft-command-permissions skipping command {} from {}", name, packageName);
-            return;
+    @SuppressWarnings("unchecked")
+    private void alterCommandNode(CommandDispatcher<ServerCommandSource> dispatcher, CommandNode<ServerCommandSource> child, boolean root) {
+        var name = build(dispatcher.getPath(child).toArray(new String[]{}));
+        if (root) {
+            var packageName = commandPackageName(child);
+            if (packageName == null || !packageName.startsWith("net.minecraft")) {
+                LOGGER.debug("minecraft-command-permissions skipping command {} from {}", name, packageName);
+                return;
+            }
         }
-        try {
-            var field = CommandNode.class.getDeclaredField("requirement");
-            field.setAccessible(true);
-            Predicate<ServerCommandSource> original = child.getRequirement();
-            field.set(child, original.or((source) -> Permissions.check(source, PREFIX + name, false)));
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            LOGGER.warn("Failed to alter field CommandNode.requirement " + name, e);
+        LOGGER.debug("Alter command node {}", name);
+        Predicate<ServerCommandSource> predicate = source -> Permissions.check(source, Constants.COMMAND.formatted(name));
+        ((CommandNodeAccessor<ServerCommandSource>) child).setRequirement(root ? child.getRequirement().or(predicate) : predicate.or(src -> src.hasPermissionLevel(2)));
+        for (CommandNode<ServerCommandSource> childChild : child.getChildren()) {
+            alterCommandNode(dispatcher, childChild, false);
         }
     }
 
