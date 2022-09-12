@@ -12,6 +12,7 @@ group = project.maven_group
 
 repositories {
 	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+	maven { url 'https://jitpack.io' } // MixinExtras
 }
 
 loom {
@@ -31,7 +32,12 @@ dependencies {
 		modImplementation(fabricApi.module(it, project.fabric_version))
 	}
 
-	modImplementation 'me.lucko:fabric-permissions-api:0.1-SNAPSHOT'
+	modImplementation "me.lucko:fabric-permissions-api:${project.fabric_permissions_version}"
+
+	// Mixin Extras
+	implementation "com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}"
+	include "com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}"
+	annotationProcessor "com.github.LlamaLad7:MixinExtras:${project.mixin_extras_version}"
 }
 
 processResources {

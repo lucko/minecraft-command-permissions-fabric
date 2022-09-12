@@ -1,6 +1,8 @@
 package com.github.tjeukayim.commandpermissionsfabric.mixin.selector;
 
 import com.github.tjeukayim.commandpermissionsfabric.Constants;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.mojang.brigadier.context.CommandContext;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -11,15 +13,15 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(EntityArgumentType.class)
 public abstract class EntityArgumentTypeMixin {
 
-    @Redirect(
+    @ModifyExpressionValue(
             method = "listSuggestions",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/command/CommandSource;hasPermissionLevel(I)Z"
             )
     )
-    public boolean addSelectorPermission(CommandSource source, int level) {
-        return Permissions.check(source, Constants.SELECTOR, level);
+    public boolean mcpf_addSelectorPermission(boolean original, CommandContext<CommandSource> context) {
+        return Permissions.check(context.getSource(), Constants.SELECTOR) || original;
     }
 
 }

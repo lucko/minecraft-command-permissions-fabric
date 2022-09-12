@@ -16,7 +16,7 @@ public abstract class PlayerManagerMixin {
             ),
             index = 1
     )
-    public int sendOpLevelTwoOrHigher(int permissionLevel) {
+    public int mcpf_sendOpLevelTwoOrHigher(int permissionLevel) {
         return Math.max(2, permissionLevel);
     }
 

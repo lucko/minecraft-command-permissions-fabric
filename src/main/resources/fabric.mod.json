@@ -19,12 +19,14 @@
   "entrypoints": {
     "server": [
       "com.github.tjeukayim.commandpermissionsfabric.PermissionsMod"
+    ],
+    "preLaunch": [
+      "com.llamalad7.mixinextras.MixinExtrasBootstrap::init"
     ]
   },
   "mixins": [
     "mcpf.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.12.8",
     "fabric-command-api-v2": "*",

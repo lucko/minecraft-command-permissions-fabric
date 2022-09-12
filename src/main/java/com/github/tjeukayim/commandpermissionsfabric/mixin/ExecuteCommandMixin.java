@@ -29,10 +29,11 @@ public abstract class ExecuteCommandMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;then(Lcom/mojang/brigadier/builder/ArgumentBuilder;)Lcom/mojang/brigadier/builder/ArgumentBuilder;",
+                    remap = false,
                     ordinal = 0
             )
     )
-    private static void addPermissionConditionArgument(
+    private static void mcpf_addPermissionConditionArgument(
             CommandNode<ServerCommandSource> root,
             LiteralArgumentBuilder<ServerCommandSource> argumentBuilder,
             boolean positive,
