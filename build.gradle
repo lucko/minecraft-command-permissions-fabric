@@ -1,10 +1,10 @@
 plugins {
-	id 'fabric-loom' version '0.12-SNAPSHOT'
+	id 'fabric-loom' version '1.7-SNAPSHOT'
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -12,6 +12,18 @@ group = project.maven_group
 
 repositories {
 	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+
+loom {
+	splitEnvironmentSourceSets()
+
+	mods {
+		"modid" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+
 }
 
 dependencies {
@@ -41,7 +53,7 @@ processResources {
 tasks.withType(JavaCompile).configureEach {
 	it.options.encoding = "UTF-8"
 
-	it.options.release.set(17)
+	it.options.release.set(21)
 }
 
 java {
