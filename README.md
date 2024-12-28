@@ -1,3 +1,11 @@
+> [!IMPORTANT]  
+> This mod is no longer being maintained. I recommmend that you instead use the [VanillaPermissions](https://github.com/DrexHD/VanillaPermissions) mod, which has equivalent functionality and is being updated for new Minecraft versions.
+> * https://modrinth.com/mod/vanilla-permissions
+> * https://github.com/DrexHD/VanillaPermissions
+>
+> Many thanks to the original author of minecraft-command-permissions-fabric, @TjeuKayim. Sorry I didn't do a very good job of keeping it up to date!
+
+
 # Minecraft Command Permissions Fabric
 
 A mod to add permission checks for built-in Minecraft commands.
